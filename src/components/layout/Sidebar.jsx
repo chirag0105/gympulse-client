@@ -9,7 +9,7 @@ const NAV_ITEMS = {
         { path: '/pt/dashboard', icon: '📊', label: 'Dashboard' },
         { path: '/pt/clients', icon: '👥', label: 'My Clients' },
         { path: '/pt/workouts', icon: '🏋️', label: 'Workouts' },
-        { path: '/pt/exercises', icon: '💪', label: 'Exercise Library' },
+        { path: '/exercises', icon: '💪', label: 'Exercise Library' },
     ],
     client: [
         { path: '/dashboard', icon: '📊', label: 'Dashboard' },
@@ -21,7 +21,7 @@ const NAV_ITEMS = {
         { path: '/admin', icon: '📊', label: 'Dashboard' },
         { path: '/admin/trainers', icon: '🏋️', label: 'Personal Trainers' },
         { path: '/admin/clients', icon: '👥', label: 'Clients' },
-        { path: '/admin/exercises', icon: '💪', label: 'Exercises' },
+        { path: '/exercises', icon: '💪', label: 'Exercises' },
         { path: '/admin/settings', icon: '⚙️', label: 'Settings' },
     ],
 };

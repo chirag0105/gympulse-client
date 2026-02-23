@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Card, Table, Badge, Button, Spinner, useToast } from '../components/ui';
 import { getAdminUsers, toggleUserStatus } from '../services/api';
 
@@ -6,6 +7,7 @@ function AdminDashboard() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const { showToast } = useToast();
+    const location = useLocation();
 
     useEffect(() => {
         fetchUsers();
@@ -37,6 +39,23 @@ function AdminDashboard() {
         }
     };
 
+    // Determine which users to show based on the route
+    const showingTrainers = location.pathname.includes('trainers');
+    const showingClients = location.pathname.includes('clients');
+
+    const filteredUsers = users.filter(user => {
+        if (showingTrainers) return user.role === 'pt';
+        if (showingClients) return user.role === 'client';
+        return true; // Show all on /admin overview
+    });
+
+    const getTitle = () => {
+        if (showingTrainers) return 'Personal Trainers';
+        if (showingClients) return 'Clients';
+        if (location.pathname.includes('settings')) return 'System Settings (Coming Soon)';
+        return 'All Users Overview';
+    };
+
     return (
         <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ marginBottom: '2rem' }}>
@@ -45,15 +64,20 @@ function AdminDashboard() {
             </div>
 
             <Card style={{ padding: '1.5rem', overflowX: 'auto' }}>
-                <h3 style={{ marginTop: 0, marginBottom: '1.5rem' }}>All Users</h3>
+                <h3 style={{ marginTop: 0, marginBottom: '1.5rem' }}>{getTitle()}</h3>
 
-                {loading ? (
+                {location.pathname.includes('settings') ? (
+                    <div style={{ textAlign: 'center', padding: '3rem' }}>
+                        <h4 style={{ color: '#666' }}>Settings coming soon</h4>
+                        <p style={{ color: '#666', margin: 0 }}>System configurations will be available here.</p>
+                    </div>
+                ) : loading ? (
                     <div style={{ textAlign: 'center', padding: '3rem' }}>
                         <Spinner />
                         <p style={{ color: '#666', marginTop: '1rem' }}>Loading user ecosystem...</p>
                     </div>
-                ) : users.length === 0 ? (
-                    <p style={{ textAlign: 'center', color: '#64748b' }}>No normal users found in the system yet.</p>
+                ) : filteredUsers.length === 0 ? (
+                    <p style={{ textAlign: 'center', color: '#64748b' }}>No {showingTrainers ? 'trainers' : showingClients ? 'clients' : 'users'} found in the system yet.</p>
                 ) : (
                     <Table>
                         <thead>
@@ -67,7 +91,7 @@ function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map(user => (
+                            {filteredUsers.map(user => (
                                 <tr key={user.id}>
                                     <td>
                                         <div style={{ fontWeight: 'bold' }}>{user.firstName} {user.lastName}</div>
